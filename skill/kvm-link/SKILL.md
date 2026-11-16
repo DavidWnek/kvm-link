@@ -9,12 +9,15 @@ Two scripts give you a real keyboard, a real mouse and a view of the screen of a
 that is wired to this PC:
 
 ```
-this PC ──USB──> ESP32 touch panel ──> RP2350 ──USB──> target computer   (kvm.py)
+this PC ──USB──> bridge board ──> RP2350 ──USB──> target computer        (kvm.py)
 this PC <──USB── HDMI capture card <──HDMI── target computer             (grab.ps1)
 ```
 
 The target sees ordinary USB devices, so this works where remote-desktop tools cannot:
 firmware setup, boot menus, installers, lock screens, a machine with no network.
+
+The bridge board is either a plain RP2350 or an ESP32 touch panel with a kill switch.
+`kvm.py status` prints a `kill switch:` line when it is the panel.
 
 Both scripts are in `scripts/` beside this file:
 
@@ -30,7 +33,7 @@ built, flashed or rewired.
 
 ## The kill switch belongs to the user
 
-The touch panel between this PC and the target is a kill switch. Green means control is on;
+When the bridge is the touch panel, it is a kill switch. Green means control is on;
 a touch turns it red and every command except `status` is refused with *"control is
 switched off at the touchscreen"*. Only a finger held on the panel for a second turns it
 back on.
@@ -48,12 +51,18 @@ kvm.py status
 ```
 bridge: COM15
 kill switch: control ON
-target board: answering (firmware v1, up 5120s), wired to panel TX IO43, RX IO44
+target board: answering (firmware v2, up 5120s), wired to panel TX IO43, RX IO44
+shows up on the target as: kvm-link keyboard and pointer
 target computer: connected, awake
 ```
 
 Each line is one link in the chain, so the first line that is wrong says where the problem
 is. "connected, asleep" is cured by `kvm.py wake`. See [Problems](#problems) for the rest.
+
+The "shows up on the target as" line is the USB device name the target computer is given.
+`kvm.py name "Some name"` changes it (32 ASCII characters at most; `kvm.py name --reset`
+undoes it). The board remembers it, and the keyboard drops off the target for a second or
+two while it changes, so only do this when the user asks for it.
 
 Then find the capture card once (`grab.ps1 -List` prints the camera names; pass any part of
 the right one as `-Device`) and take a first picture.

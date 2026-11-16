@@ -8,6 +8,7 @@
     python kvm.py mash del --seconds 15        # get into firmware setup at boot
     python kvm.py click 960 540
     python kvm.py --res 1280x720 click 640 360 --button right
+    python kvm.py name "Bench keyboard"        # what the target calls the device
 
 Coordinates are pixels on the target's screen; --res (or KVM_RES) says how big
 that screen is. The serial port is found automatically; --port or KVM_PORT
@@ -21,9 +22,10 @@ import time
 
 BRIDGE_HELLO = "!kvm-link bridge"
 PICO_VID = 0x2E8A
+TWOWAY_VID = 0x1209  # an RP2350 running kvm_twoway
 # USB IDs a bridge can show up with: RP2350, or an ESP32 panel's serial chip
 # (CH340, CP210x) or native USB.
-BRIDGE_VIDS = (PICO_VID, 0x1A86, 0x10C4, 0x303A)
+BRIDGE_VIDS = (PICO_VID, TWOWAY_VID, 0x1A86, 0x10C4, 0x303A)
 
 MODIFIERS = {
     "ctrl": 0x01, "lctrl": 0x01, "control": 0x01,
@@ -65,6 +67,8 @@ for _c, _s, _u in zip(_PLAIN, _SHIFTED, _PLAIN_USAGE):
 KEYS.update({c: u for c, (u, shifted) in CHARS.items() if not shifted and c.strip()})
 
 BUTTONS = {"left": 0x01, "right": 0x02, "middle": 0x04}
+
+NAME_MAX = 32  # the longest USB device name the target board will report
 
 
 class KvmError(Exception):
@@ -163,7 +167,7 @@ class Link:
         tried = []
         for dev in candidates:
             info = ports.get(dev)
-            is_pico = bool(info and info.vid == PICO_VID)
+            is_pico = bool(info and info.vid in (PICO_VID, TWOWAY_VID))
             try:
                 ser = serial.Serial()
                 ser.port, ser.baudrate = dev, 115200
@@ -256,6 +260,9 @@ def explain(reply: str) -> str:
         "-nowake": "the other computer is asleep and has not allowed this "
                    "device to wake it",
         "-busy": "the other computer is not reading the device right now",
+        "-cmd": "the target board does not know this command; its firmware is "
+                "older than this script (flash the current build)",
+        "-store": "the target board could not save the name",
     }.get(reply, f"target board refused the command ({reply})")
 
 
@@ -322,8 +329,37 @@ class Kvm:
             time.sleep(0.02)
 
     def status(self):
+        """What the target board says about itself. 'name' is what it tells the
+        target computer it is called (firmware v2 and later)."""
         reply = self.link.cmd("S")
-        return dict(f.split("=", 1) for f in reply.split()[1:] if "=" in f)
+        # The name comes last and may have spaces in it.
+        fields, has_name, name = reply.partition(" n=")
+        s = dict(f.split("=", 1) for f in fields.split()[1:] if "=" in f)
+        if has_name:
+            s["name"] = name
+        return s
+
+    def set_name(self, name=None, wait=8.0):
+        """Change what the target computer is told this keyboard and pointer are
+        called; None goes back to the built-in names. The board keeps the name
+        when unplugged. It leaves the USB bus and rejoins to announce it, so this
+        waits up to `wait` seconds for the target computer to pick it up again,
+        and returns whether it did."""
+        name = (name or "").strip()
+        if len(name) > NAME_MAX:
+            raise KvmError(f"the name is {len(name)} characters long and a USB device "
+                           f"name can be {NAME_MAX} at most")
+        if any(not " " <= ch <= "~" for ch in name):
+            raise KvmError("the name can only have plain ASCII letters, digits, "
+                           "spaces and punctuation in it")
+        self.link.cmd(("N " + name).strip())
+        deadline = time.monotonic() + wait
+        while time.monotonic() < deadline:
+            time.sleep(0.3)
+            s = self.status()
+            if not s or s.get("m") == "1":  # no fields: a dry run
+                return True
+        return False
 
 
 def main(argv=None):
@@ -372,6 +408,11 @@ def main(argv=None):
     p = sub.add_parser("scroll", help="wheel clicks; positive is up")
     p.add_argument("clicks", type=int)
 
+    p = sub.add_parser("name", help="show, or with TEXT set, the name the target "
+                                    "computer is given for this keyboard and pointer")
+    p.add_argument("text", nargs="?", help=f"new name, {NAME_MAX} characters at most")
+    p.add_argument("--reset", action="store_true", help="go back to the built-in name")
+
     sub.add_parser("release", help="let go of every key and button")
     sub.add_parser("wake", help="wake the target from sleep")
 
@@ -385,6 +426,10 @@ def main(argv=None):
         ap.error(f"--res must look like 1920x1080, got {a.res!r}")
     if a.command == "click" and (a.x is None) != (a.y is None):
         ap.error("click takes both X and Y, or neither")
+    if a.command == "name" and a.reset and a.text is not None:
+        ap.error("name takes TEXT or --reset, not both")
+    if a.command == "name" and a.text is not None and not a.text.strip():
+        ap.error("the name is empty; use --reset to go back to the built-in name")
 
     link = None
     try:
@@ -424,6 +469,8 @@ def run(a, kvm, link):
                                      else "STOPPED at the touchscreen"))
         print(f"target board: answering (firmware v{s.get('v', '?')}, up {s.get('up', '?')}s)"
               + (f", wired to {link.link_pins}" if link.link_pins else ""))
+        if "name" in s:
+            print(f"shows up on the target as: {s['name']}")
         if s.get("m") != "1":
             print("target computer: has NOT picked up the keyboard (off or not connected)")
         elif s.get("s") == "1":
@@ -466,6 +513,22 @@ def run(a, kvm, link):
         kvm.drag(a.x1, a.y1, a.x2, a.y2, BUTTONS[a.button])
     elif a.command == "scroll":
         kvm.scroll(a.clicks)
+    elif a.command == "name":
+        if a.text is None and not a.reset:
+            s = kvm.status()
+            if a.dry_run:
+                return
+            if "name" not in s:
+                raise KvmError(explain("-cmd"))
+            print(s["name"])
+            return
+        back = kvm.set_name(None if a.reset else a.text)
+        if a.dry_run:
+            return
+        print(f"the target board now calls itself: {kvm.status().get('name', '?')}")
+        if not back:
+            print("the target computer has not picked it up again yet "
+                  "(off or not connected?); it will see the new name when it does")
     elif a.command == "release":
         link.cmd("Z")
     elif a.command == "wake":

@@ -23,16 +23,34 @@
 //   B bb ww            buttons and wheel at the current pointer position
 //   Z                  release every key and button
 //   W                  ask a suspended host to wake
+//   N [text]           call the USB device <text> from now on (kept across power
+//                      cycles); no text goes back to the built-in names
 //   S                  status
 
 #include "Adafruit_TinyUSB.h"
+#include <EEPROM.h>
 #include <hardware/gpio.h>
 
-#define KVM_VERSION 1
+#define KVM_VERSION 2
 #define UART_BAUD 115200
 #define PIN_UART_TX 0
 #define PIN_UART_RX 1
 #define HOLD_TIMEOUT_MS 5000 // drop held keys if the controller goes quiet
+
+// What the computer is told this device is called. The USB stack reads these
+// buffers each time the computer asks, so writing a new name into them and
+// rejoining the bus is all a rename takes. 32 characters is the most the
+// stack will send.
+#define NAME_MAX 32
+#define DEFAULT_PRODUCT "kvm-link keyboard and pointer"
+#define DEFAULT_KEYBOARD "kvm-link keyboard"
+#define DEFAULT_POINTER "kvm-link pointer"
+#define NAME_MAGIC 0x4E4D564BUL // "KVMN": a name has been stored
+
+struct StoredName {
+  uint32_t magic;
+  char name[NAME_MAX + 1];
+};
 
 static const uint8_t desc_keyboard[] = {TUD_HID_REPORT_DESC_KEYBOARD()};
 
@@ -84,6 +102,11 @@ static uint8_t ptr_buttons = 0;
 static uint16_t ptr_x = 0x3FFF, ptr_y = 0x3FFF;
 static volatile uint8_t kbd_leds = 0;
 static uint32_t last_cmd_ms = 0;
+
+static char name_product[NAME_MAX + 1] = DEFAULT_PRODUCT;
+static char name_keyboard[NAME_MAX + 1] = DEFAULT_KEYBOARD;
+static char name_pointer[NAME_MAX + 1] = DEFAULT_POINTER;
+static bool name_custom = false;
 
 static void on_keyboard_set_report(uint8_t report_id, hid_report_type_t type,
                                    uint8_t const *buffer, uint16_t bufsize) {
@@ -158,6 +181,62 @@ static const char *release_all(void) {
   const char *e1 = send_keyboard();
   const char *e2 = send_pointer(0);
   return e1 ? e1 : e2;
+}
+
+// ---- the name the computer sees ---------------------------------------------
+
+// 1 to 32 printable ASCII characters.
+static bool valid_name(const char *name) {
+  size_t n = strlen(name);
+  if (n < 1 || n > NAME_MAX) {
+    return false;
+  }
+  for (const char *p = name; *p; p++) {
+    if (*p < 0x20 || *p > 0x7E) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// A given name is used for the device and for both of its parts, because an
+// operating system may show any of the three. NULL: the built-in names.
+static void use_name(const char *name) {
+  strcpy(name_product, name ? name : DEFAULT_PRODUCT);
+  strcpy(name_keyboard, name ? name : DEFAULT_KEYBOARD);
+  strcpy(name_pointer, name ? name : DEFAULT_POINTER);
+  name_custom = name != NULL;
+}
+
+static void load_name(void) {
+  StoredName s;
+  EEPROM.begin(sizeof(s));
+  EEPROM.get(0, s);
+  s.name[NAME_MAX] = 0;
+  if (s.magic == NAME_MAGIC && valid_name(s.name)) {
+    use_name(s.name);
+  }
+}
+
+// Keep the name (NULL: none) for the next power-up.
+static bool store_name(const char *name) {
+  StoredName s;
+  memset(&s, 0, sizeof(s));
+  if (name) {
+    s.magic = NAME_MAGIC;
+    strcpy(s.name, name);
+  }
+  EEPROM.put(0, s);
+  return EEPROM.commit();
+}
+
+// Leave the bus and come back, so the computer asks who this is again.
+static void rejoin_usb(void) {
+  memset(kbd_report, 0, sizeof(kbd_report));
+  ptr_buttons = 0;
+  TinyUSBDevice.detach();
+  delay(250); // long enough for the host to notice the disconnect
+  TinyUSBDevice.attach();
 }
 
 // Parse up to `max` space-separated hex numbers. Returns the count, or -1 on
@@ -255,12 +334,44 @@ static void handle_line(char *line) {
       err = "-nowake"; // host did not arm remote wakeup before sleeping
     }
     break;
+  case 'N': {
+    char *name = line + 1;
+    while (*name == ' ') {
+      name++;
+    }
+    size_t n = strlen(name);
+    while (n && name[n - 1] == ' ') {
+      name[--n] = 0;
+    }
+    if (!n) {
+      name = NULL; // back to the built-in names
+    } else if (!valid_name(name)) {
+      reply("-args");
+      return;
+    }
+    if (name ? (name_custom && strcmp(name, name_product) == 0) : !name_custom) {
+      break; // already called that
+    }
+    if (!store_name(name)) {
+      reply("-store");
+      return;
+    }
+    // Answer first: the computer takes a second or two to pick the device up
+    // again, and until then every report is refused with -nohost.
+    reply("+");
+    Serial1.flush();
+    use_name(name);
+    rejoin_usb();
+    return;
+  }
   case 'S': {
-    char buf[80];
-    snprintf(buf, sizeof(buf), "+S v=%d m=%d s=%d leds=%02X held=%d up=%lu",
+    // The name comes last because it may have spaces in it.
+    char buf[128];
+    snprintf(buf, sizeof(buf), "+S v=%d m=%d s=%d leds=%02X held=%d up=%lu n=%s",
              KVM_VERSION, TinyUSBDevice.mounted() ? 1 : 0,
              TinyUSBDevice.suspended() ? 1 : 0, kbd_leds,
-             anything_held() ? 1 : 0, (unsigned long)(millis() / 1000));
+             anything_held() ? 1 : 0, (unsigned long)(millis() / 1000),
+             name_product);
     reply(buf);
     return;
   }
@@ -296,19 +407,20 @@ void setup() {
   TinyUSBDevice.clearConfiguration();
   TinyUSBDevice.setID(0x1209, 0x0001); // pid.codes test ID
   TinyUSBDevice.setManufacturerDescriptor("kvm-link");
-  TinyUSBDevice.setProductDescriptor("kvm-link keyboard and pointer");
+  load_name();
+  TinyUSBDevice.setProductDescriptor(name_product);
 
   usb_keyboard.setBootProtocol(HID_ITF_PROTOCOL_KEYBOARD);
   usb_keyboard.setPollInterval(2);
   usb_keyboard.setReportDescriptor(desc_keyboard, sizeof(desc_keyboard));
-  usb_keyboard.setStringDescriptor("kvm-link keyboard");
+  usb_keyboard.setStringDescriptor(name_keyboard);
   usb_keyboard.setReportCallback(NULL, on_keyboard_set_report);
   usb_keyboard.begin();
 
   usb_pointer.setBootProtocol(HID_ITF_PROTOCOL_NONE);
   usb_pointer.setPollInterval(2);
   usb_pointer.setReportDescriptor(desc_pointer, sizeof(desc_pointer));
-  usb_pointer.setStringDescriptor("kvm-link pointer");
+  usb_pointer.setStringDescriptor(name_pointer);
   usb_pointer.begin();
 
   delay(250); // long enough for the host to notice the disconnect

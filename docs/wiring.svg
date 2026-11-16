@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" width="960" height="620" role="img" aria-labelledby="t d">
+  <title id="t">kvm-link wiring with two RP2350 boards</title>
+  <desc id="d">Three wires join two Waveshare RP2350-Zero boards: GP0 of the bridge board to GP1 of the target board, GP0 of the target board to GP1 of the bridge board, and GND to GND. The bridge board's USB goes to the controlling PC and the target board's USB goes to the target computer.</desc>
+  <defs>
+    <marker id="aTx" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f5b942"/></marker>
+    <marker id="aRx" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#4cc38a"/></marker>
+  </defs>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #e6edf3; }
+    .dim { fill: #8b949e; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace; }
+    .pad { fill: #b08d2e; }
+    .padon { fill: #ffd866; stroke: #ffffff; stroke-width: 1.5; }
+    .pin { font-size: 10px; fill: #9db0e8; }
+    .pinon { font-size: 10.5px; font-weight: 700; fill: #ffffff; }
+    .wire { fill: none; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+  </style>
+
+  <rect x="0.5" y="0.5" width="959" height="619" rx="12" fill="#0d1117" stroke="#30363d"/>
+  <text x="60" y="44" font-size="20" font-weight="700">Wiring</text>
+
+  <!-- wires -->
+  <path class="wire" d="M174 188H150V70H612V188H634" stroke="#d0d7de"/>
+  <path class="wire" d="M326 160H590V440H850V188H790" stroke="#f5b942" marker-end="url(#aTx)"/>
+  <path class="wire" d="M786 160H878V468H565V188H330" stroke="#4cc38a" marker-end="url(#aRx)"/>
+  <text x="381" y="62" font-size="12" font-weight="700" text-anchor="middle">GND to GND</text>
+  <text x="458" y="152" font-size="12" font-weight="700" text-anchor="middle" fill="#f5b942">GP0 → GP1</text>
+  <text x="448" y="181" font-size="12" font-weight="700" text-anchor="middle" fill="#4cc38a">GP1 ← GP0</text>
+  <text x="720" y="434" font-size="11" text-anchor="middle" fill="#f5b942">bridge TX → target RX</text>
+  <text x="720" y="462" font-size="11" text-anchor="middle" fill="#4cc38a">target TX → bridge RX</text>
+
+  <!-- bridge board -->
+  <path d="M250 116V94" fill="none" stroke="#6e7681" stroke-width="6" stroke-linecap="round"/>
+  <text x="264" y="102" font-size="13" font-weight="700">USB to this PC</text>
+  <rect x="180" y="128" width="140" height="284" rx="8" fill="#1f3a8a" stroke="#3b5bbd"/>
+  <rect x="226" y="114" width="48" height="40" rx="5" fill="#c9ced6" stroke="#8b949e"/>
+  <rect x="234" y="119" width="32" height="7" rx="3" fill="#30363d"/>
+  <rect x="230" y="208" width="14" height="14" rx="3" fill="#e5e7eb"/><rect x="256" y="208" width="14" height="14" rx="3" fill="#e5e7eb"/>
+  <text x="237" y="203" font-size="7" text-anchor="middle" fill="#c7d2fe">BOOT</text><text x="263" y="203" font-size="7" text-anchor="middle" fill="#c7d2fe">RUN</text>
+  <rect x="232" y="262" width="36" height="36" rx="3" fill="#111827" stroke="#374151"/><text x="250" y="283" font-size="7" text-anchor="middle" fill="#9ca3af">RP2350</text>
+  <rect class="pad" x="174" y="154" width="12" height="12" rx="3"/><text class="pin" x="192" y="164">5V</text>
+  <rect class="padon" x="174" y="182" width="12" height="12" rx="3"/><text class="pinon" x="192" y="192">GND</text>
+  <rect class="pad" x="174" y="210" width="12" height="12" rx="3"/><text class="pin" x="192" y="220">3V3</text>
+  <rect class="pad" x="174" y="238" width="12" height="12" rx="3"/><text class="pin" x="192" y="248">GP29</text>
+  <rect class="pad" x="174" y="266" width="12" height="12" rx="3"/><text class="pin" x="192" y="276">GP28</text>
+  <rect class="pad" x="174" y="294" width="12" height="12" rx="3"/><text class="pin" x="192" y="304">GP27</text>
+  <rect class="pad" x="174" y="322" width="12" height="12" rx="3"/><text class="pin" x="192" y="332">GP26</text>
+  <rect class="pad" x="174" y="350" width="12" height="12" rx="3"/><text class="pin" x="192" y="360">GP15</text>
+  <rect class="pad" x="174" y="378" width="12" height="12" rx="3"/><text class="pin" x="192" y="388">GP14</text>
+  <rect class="padon" x="314" y="154" width="12" height="12" rx="3"/><text class="pinon" x="308" y="164" text-anchor="end">GP0</text>
+  <rect class="padon" x="314" y="182" width="12" height="12" rx="3"/><text class="pinon" x="308" y="192" text-anchor="end">GP1</text>
+  <rect class="pad" x="314" y="210" width="12" height="12" rx="3"/><text class="pin" x="308" y="220" text-anchor="end">GP2</text>
+  <rect class="pad" x="314" y="238" width="12" height="12" rx="3"/><text class="pin" x="308" y="248" text-anchor="end">GP3</text>
+  <rect class="pad" x="314" y="266" width="12" height="12" rx="3"/><text class="pin" x="308" y="276" text-anchor="end">GP4</text>
+  <rect class="pad" x="314" y="294" width="12" height="12" rx="3"/><text class="pin" x="308" y="304" text-anchor="end">GP5</text>
+  <rect class="pad" x="314" y="322" width="12" height="12" rx="3"/><text class="pin" x="308" y="332" text-anchor="end">GP6</text>
+  <rect class="pad" x="314" y="350" width="12" height="12" rx="3"/><text class="pin" x="308" y="360" text-anchor="end">GP7</text>
+  <rect class="pad" x="314" y="378" width="12" height="12" rx="3"/><text class="pin" x="308" y="388" text-anchor="end">GP8</text>
+  <rect class="pad" x="188" y="406" width="12" height="12" rx="3"/>
+  <rect class="pad" x="216" y="406" width="12" height="12" rx="3"/>
+  <rect class="pad" x="244" y="406" width="12" height="12" rx="3"/>
+  <rect class="pad" x="272" y="406" width="12" height="12" rx="3"/>
+  <rect class="pad" x="300" y="406" width="12" height="12" rx="3"/>
+  <text x="250" y="502" font-size="14" font-weight="700" text-anchor="middle">Bridge board</text>
+  <text x="250" y="520" font-size="12" text-anchor="middle" class="dim">a serial port on this PC</text>
+  <text x="250" y="537" font-size="11" text-anchor="middle" class="mono dim">build/kvm-bridge.uf2</text>
+
+  <!-- target board -->
+  <path d="M710 116V94" fill="none" stroke="#6e7681" stroke-width="6" stroke-linecap="round"/>
+  <text x="724" y="102" font-size="13" font-weight="700">USB to the target computer</text>
+  <rect x="640" y="128" width="140" height="284" rx="8" fill="#1f3a8a" stroke="#3b5bbd"/>
+  <rect x="686" y="114" width="48" height="40" rx="5" fill="#c9ced6" stroke="#8b949e"/>
+  <rect x="694" y="119" width="32" height="7" rx="3" fill="#30363d"/>
+  <rect x="690" y="208" width="14" height="14" rx="3" fill="#e5e7eb"/><rect x="716" y="208" width="14" height="14" rx="3" fill="#e5e7eb"/>
+  <text x="697" y="203" font-size="7" text-anchor="middle" fill="#c7d2fe">BOOT</text><text x="723" y="203" font-size="7" text-anchor="middle" fill="#c7d2fe">RUN</text>
+  <rect x="692" y="262" width="36" height="36" rx="3" fill="#111827" stroke="#374151"/><text x="710" y="283" font-size="7" text-anchor="middle" fill="#9ca3af">RP2350</text>
+  <rect class="pad" x="634" y="154" width="12" height="12" rx="3"/><text class="pin" x="652" y="164">5V</text>
+  <rect class="padon" x="634" y="182" width="12" height="12" rx="3"/><text class="pinon" x="652" y="192">GND</text>
+  <rect class="pad" x="634" y="210" width="12" height="12" rx="3"/><text class="pin" x="652" y="220">3V3</text>
+  <rect class="pad" x="634" y="238" width="12" height="12" rx="3"/><text class="pin" x="652" y="248">GP29</text>
+  <rect class="pad" x="634" y="266" width="12" height="12" rx="3"/><text class="pin" x="652" y="276">GP28</text>
+  <rect class="pad" x="634" y="294" width="12" height="12" rx="3"/><text class="pin" x="652" y="304">GP27</text>
+  <rect class="pad" x="634" y="322" width="12" height="12" rx="3"/><text class="pin" x="652" y="332">GP26</text>
+  <rect class="pad" x="634" y="350" width="12" height="12" rx="3"/><text class="pin" x="652" y="360">GP15</text>
+  <rect class="pad" x="634" y="378" width="12" height="12" rx="3"/><text class="pin" x="652" y="388">GP14</text>
+  <rect class="padon" x="774" y="154" width="12" height="12" rx="3"/><text class="pinon" x="768" y="164" text-anchor="end">GP0</text>
+  <rect class="padon" x="774" y="182" width="12" height="12" rx="3"/><text class="pinon" x="768" y="192" text-anchor="end">GP1</text>
+  <rect class="pad" x="774" y="210" width="12" height="12" rx="3"/><text class="pin" x="768" y="220" text-anchor="end">GP2</text>
+  <rect class="pad" x="774" y="238" width="12" height="12" rx="3"/><text class="pin" x="768" y="248" text-anchor="end">GP3</text>
+  <rect class="pad" x="774" y="266" width="12" height="12" rx="3"/><text class="pin" x="768" y="276" text-anchor="end">GP4</text>
+  <rect class="pad" x="774" y="294" width="12" height="12" rx="3"/><text class="pin" x="768" y="304" text-anchor="end">GP5</text>
+  <rect class="pad" x="774" y="322" width="12" height="12" rx="3"/><text class="pin" x="768" y="332" text-anchor="end">GP6</text>
+  <rect class="pad" x="774" y="350" width="12" height="12" rx="3"/><text class="pin" x="768" y="360" text-anchor="end">GP7</text>
+  <rect class="pad" x="774" y="378" width="12" height="12" rx="3"/><text class="pin" x="768" y="388" text-anchor="end">GP8</text>
+  <rect class="pad" x="648" y="406" width="12" height="12" rx="3"/>
+  <rect class="pad" x="676" y="406" width="12" height="12" rx="3"/>
+  <rect class="pad" x="704" y="406" width="12" height="12" rx="3"/>
+  <rect class="pad" x="732" y="406" width="12" height="12" rx="3"/>
+  <rect class="pad" x="760" y="406" width="12" height="12" rx="3"/>
+  <text x="710" y="502" font-size="14" font-weight="700" text-anchor="middle">Target board</text>
+  <text x="710" y="520" font-size="12" text-anchor="middle" class="dim">a keyboard and pointer on the target</text>
+  <text x="710" y="537" font-size="11" text-anchor="middle" class="mono dim">build/kvm-target.uf2</text>
+
+  <!-- notes -->
+  <line x1="60" y1="554" x2="900" y2="554" stroke="#21262d"/>
+  <text x="60" y="576" font-size="12.5"><tspan fill="#f5b942" font-weight="700">GP0</tspan> of each board goes to <tspan fill="#4cc38a" font-weight="700">GP1</tspan> of the other, and the two grounds are joined. Boards shown: Waveshare RP2350-Zero, top view.</text>
+  <text x="60" y="598" font-size="12.5" class="dim">Leave 5V and 3V3 alone: each board is powered by its own USB port, and joining them would tie the two computers together.</text>
+</svg>

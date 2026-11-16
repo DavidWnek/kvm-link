@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 772" width="960" height="772" role="img" aria-labelledby="t d">
   <title id="t">kvm-link two-way pair: how a command travels</title>
-  <desc id="d">Each RP2350 board is a USB serial port and a USB keyboard and pointer on its own computer. When computer A drives computer B, kvm.py on A writes a command line to board A's serial port, board A sends it out of GP13, board B receives it on GP9 and turns it into a USB keyboard or pointer report for computer B. Board B then answers out of its own GP13, board A receives the answer on GP9 and hands it to kvm.py. When computer B drives computer A the same happens the other way round, over the same two joints. A board tells the two kinds of line apart by the first character: plus or minus is an answer, anything else is a command.</desc>
+  <desc id="d">Each RP2350 board is a USB serial port and a USB keyboard and pointer on its own computer. When computer A drives computer B, kvm.py on A writes a command line to board A's serial port, board A sends it out of GP13, board B receives it on GP9 and turns it into a USB keyboard or pointer report for computer B. Board B then answers out of its own GP13, board A receives the answer on GP9 and hands it to kvm.py. When computer B drives computer A the same happens the other way round, over the same two joints. A jumper wire joins the grounds of the two boards. A board tells the two kinds of line apart by the first character: plus or minus is an answer, anything else is a command.</desc>
   <defs>
     <marker id="c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f5b942"/></marker>
     <marker id="r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#4cc38a"/></marker>
@@ -98,6 +98,10 @@
   <text x="586" y="230" font-size="11" font-weight="700" text-anchor="middle" fill="#4cc38a">5</text>
   <circle cx="235" cy="178" r="9" fill="#0d1117" stroke="#4cc38a" stroke-width="1.8"/>
   <text x="235" y="182" font-size="11" font-weight="700" text-anchor="middle" fill="#4cc38a">6</text>
+  <path d="M450 292Q480 304 510 292" fill="none" stroke="#d0d7de" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="450" cy="292" r="4.5" fill="#ffd866" stroke="#ffffff" stroke-width="1.2"/>
+  <circle cx="510" cy="292" r="4.5" fill="#ffd866" stroke="#ffffff" stroke-width="1.2"/>
+  <text class="s" x="480" y="286" text-anchor="middle" fill="#c9d1d9">GND wire</text>
   <rect class="pad" x="444" y="182" width="12" height="12" rx="3"/>
   <rect class="pad" x="444" y="258" width="12" height="12" rx="3"/>
   <rect class="pad" x="504" y="182" width="12" height="12" rx="3"/>
@@ -181,11 +185,15 @@
   <path class="cmd" d="M277 646H189" marker-end="url(#c)"/>
   <path class="ans" d="M387 646H540V582H571" marker-end="url(#r)"/>
   <path class="ans" d="M683 560H771" marker-end="url(#r)"/>
+  <path d="M450 674Q480 686 510 674" fill="none" stroke="#d0d7de" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="450" cy="674" r="4.5" fill="#ffd866" stroke="#ffffff" stroke-width="1.2"/>
+  <circle cx="510" cy="674" r="4.5" fill="#ffd866" stroke="#ffffff" stroke-width="1.2"/>
+  <text class="s" x="480" y="668" text-anchor="middle" fill="#c9d1d9">GND wire</text>
   <rect class="pad" x="444" y="564" width="12" height="12" rx="3"/>
   <rect class="pad" x="444" y="640" width="12" height="12" rx="3"/>
   <rect class="pad" x="504" y="564" width="12" height="12" rx="3"/>
   <rect class="pad" x="504" y="640" width="12" height="12" rx="3"/>
   <line x1="60" y1="708" x2="900" y2="708" stroke="#21262d"/>
-  <text x="60" y="730" font-size="12.5">Both joints are used in both cases, and both directions can run at once. A board tells the lines apart by how they start:</text>
+  <text x="60" y="730" font-size="12.5">Both joints and the ground jumper wire are used in both cases, and both directions can run at once. A board tells the lines apart by how they start:</text>
   <text x="60" y="752" font-size="12.5" class="dim"><tspan class="mono" fill="#4cc38a" font-weight="700">+</tspan> or <tspan class="mono" fill="#4cc38a" font-weight="700">-</tspan> is an answer and goes to the serial port; anything else is a command for the keyboard and pointer. Every line ends in a checksum.</text>
 </svg>

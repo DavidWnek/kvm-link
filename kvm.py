@@ -21,11 +21,10 @@ import sys
 import time
 
 BRIDGE_HELLO = "!kvm-link bridge"
-PICO_VID = 0x2E8A
 TWOWAY_VID = 0x1209  # an RP2350 running kvm_twoway
-# USB IDs a bridge can show up with: RP2350, or an ESP32 panel's serial chip
-# (CH340, CP210x) or native USB.
-BRIDGE_VIDS = (PICO_VID, TWOWAY_VID, 0x1A86, 0x10C4, 0x303A)
+# USB IDs a bridge can show up with: a two-way RP2350, or an ESP32 panel's
+# serial chip (CH340, CP210x) or native USB.
+BRIDGE_VIDS = (TWOWAY_VID, 0x1A86, 0x10C4, 0x303A)
 
 MODIFIERS = {
     "ctrl": 0x01, "lctrl": 0x01, "control": 0x01,
@@ -167,19 +166,19 @@ class Link:
         tried = []
         for dev in candidates:
             info = ports.get(dev)
-            is_pico = bool(info and info.vid in (PICO_VID, TWOWAY_VID))
+            is_rp2350 = bool(info and info.vid == TWOWAY_VID)
             try:
                 ser = serial.Serial()
                 ser.port, ser.baudrate = dev, 115200
                 ser.timeout, ser.write_timeout = 0.4, 1
-                # The RP2350 bridge wants DTR to know someone is listening. On an
-                # ESP32 panel DTR and RTS are wired to reset, so leave both alone.
-                ser.dtr = ser.rts = is_pico
+                # An RP2350 only writes to a port that has DTR set. On an ESP32
+                # panel DTR and RTS are wired to reset, so leave both alone.
+                ser.dtr = ser.rts = is_rp2350
                 ser.open()
             except serial.SerialException as e:
                 tried.append(f"{dev}: {e}")
                 continue
-            hello = self._hello(ser, 0.5 if is_pico else 4.0)
+            hello = self._hello(ser, 0.5 if is_rp2350 else 4.0)
             if hello:
                 self.ser, self.port = ser, dev
                 if "enabled=" in hello:

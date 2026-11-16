@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 738" width="960" height="738" role="img" aria-labelledby="t d">
   <title id="t">kvm-link two-way pair: how the two RP2350 boards are joined</title>
-  <desc id="d">Two Waveshare RP2350-Zero boards lie end to end, both face up, with their USB sockets pointing away from each other. The five pads on the end of one board are soldered to the five they meet on the other. Board A GP9 meets board B GP13, and board A GP13 meets board B GP9: those two corner joints are the link, GP13 sending and GP9 receiving on each board. The three joints between them, GP10 to GP12, GP11 to GP11 and GP12 to GP10, carry nothing. A separate wire joins the GND pad of one board to the GND pad of the other.</desc>
+  <desc id="d">Two Waveshare RP2350-Zero boards lie end to end, both face up, with their USB sockets pointing away from each other. The five pads on the end of one board are soldered to the five they meet on the other. Board A GP9 meets board B GP13, and board A GP13 meets board B GP9: those two corner joints are the link, GP13 sending and GP9 receiving on each board. The three joints between them, GP10 to GP12, GP11 to GP11 and GP12 to GP10, carry nothing. A separate jumper wire joins the GND pad of one board to the GND pad of the other.</desc>
   <defs>
     <marker id="aA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f5b942"/></marker>
     <marker id="aB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#4cc38a"/></marker>
@@ -149,7 +149,7 @@
   <path d="M256 316V352H718V192H704V176" fill="none" stroke="#d0d7de" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
   <text class="pinon" x="268" y="298">GND</text>
   <text class="pinon" x="704" y="158" text-anchor="middle">GND</text>
-  <text x="487" y="372" font-size="12" font-weight="700" text-anchor="middle">GND to GND: one wire, over or under the boards</text>
+  <text x="487" y="372" font-size="12" font-weight="700" text-anchor="middle">GND jumper wire, from one GND pad to the other, over or under the boards</text>
   <line x1="60" y1="398" x2="900" y2="398" stroke="#21262d"/>
   <text x="60" y="428" font-size="14" font-weight="700">The joints, close up</text>
   <rect class="board" x="250" y="436" width="170" height="180" rx="8"/>
@@ -194,6 +194,6 @@
   <text x="700" y="538" font-size="12" class="dim">they hold the boards together</text>
   <line x1="60" y1="642" x2="900" y2="642" stroke="#21262d"/>
   <text x="60" y="664" font-size="12.5">Each board sends on <tspan fill="#ffffff" font-weight="700">GP13</tspan> and receives on <tspan fill="#ffffff" font-weight="700">GP9</tspan>; turned half round, one board's GP13 lands on the other's GP9. No joint may touch its neighbour.</text>
-  <text x="60" y="686" font-size="12.5" class="dim">There is no ground on that edge, so GND needs its own wire. Leave 5V and 3V3 alone: each board is powered by its own computer.</text>
+  <text x="60" y="686" font-size="12.5" class="dim">There is no ground on that edge, so GND needs its own jumper wire. Leave 5V and 3V3 alone: each board is powered by its own computer.</text>
   <text x="60" y="708" font-size="12.5" class="dim">Boards shown: Waveshare RP2350-Zero, top view.</text>
 </svg>

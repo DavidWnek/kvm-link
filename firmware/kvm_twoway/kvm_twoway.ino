@@ -29,8 +29,9 @@
 // Receiving is a hardware UART (UART1, RX on GP9), for its buffer. No pad that
 // meets GP9 can be a hardware UART's TX, so sending is a PIO UART on GP13.
 //
-// Protocol on the serial port: the same as kvm_bridge. Lines starting with '!'
-// are answered here; every other line is passed to the other board.
+// Protocol on the serial port: lines starting with '!' are answered here, so
+// the PC can tell "found the board" apart from "the other board is answering";
+// every other line is passed to the other board.
 //
 // Protocol on the wires: the same as kvm_target, in both directions at once.
 // "<payload>*<XX>\n", XX the XOR of the payload bytes in hex. A line whose

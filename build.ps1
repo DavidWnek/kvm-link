@@ -1,7 +1,6 @@
-# Builds the RP2350 firmware images into build\kvm-target.uf2 (the keyboard
-# side), build\kvm-bridge.uf2 (the plain bridge, only needed when a second
-# RP2350 stands in for the ESP32 panel) and build\kvm-twoway.uf2 (both in one,
-# the same image on both boards). Needs the Arduino "Raspberry Pi
+# Builds the RP2350 firmware images into build\kvm-twoway.uf2 (the same image
+# for both boards of a soldered pair) and build\kvm-target.uf2 (keyboard and
+# pointer only, for the board an ESP32 panel drives). Needs the Arduino "Raspberry Pi
 # Pico/RP2040/RP2350" core (earlephilhower) and arduino-cli, which Arduino
 # IDE 2 ships with.
 #
@@ -23,7 +22,6 @@ $out = Join-Path $root 'build'
 New-Item -ItemType Directory -Force $out | Out-Null
 
 $images = @(
-    @{ Name = 'kvm-bridge'; Sketch = 'kvm_bridge'; Fqbn = "rp2040:rp2040:$Board" },
     @{ Name = 'kvm-target'; Sketch = 'kvm_target'; Fqbn = "rp2040:rp2040:${Board}:usbstack=tinyusb" },
     @{ Name = 'kvm-twoway'; Sketch = 'kvm_twoway'; Fqbn = "rp2040:rp2040:${Board}:usbstack=tinyusb" }
 )

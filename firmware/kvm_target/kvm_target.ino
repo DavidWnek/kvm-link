@@ -3,15 +3,15 @@
 // Plugs into the computer being controlled and shows up there as a plain USB
 // keyboard plus an absolute pointer (the same kind of device a VM "USB tablet"
 // is). It has no serial port of its own: commands arrive on UART0 from the
-// bridge board, which is plugged into the controlling PC.
+// bridge, an ESP32 touch panel plugged into the controlling PC.
 //
 // Build with the Adafruit TinyUSB stack:
 //   FQBN rp2040:rp2040:rpipico2:usbstack=tinyusb
 //
-// Wiring to the bridge board (3 wires, nothing else):
-//   GP0 (TX, pin 1) -> bridge GP1 (RX, pin 2)
-//   GP1 (RX, pin 2) <- bridge GP0 (TX, pin 1)
-//   GND (pin 3)     -- bridge GND (pin 3)
+// Wiring to the bridge (3 wires, nothing else):
+//   GP0 (TX, pin 1) -> bridge RX
+//   GP1 (RX, pin 2) <- bridge TX
+//   GND (pin 3)     -- bridge GND
 //
 // Protocol: one ASCII line per command, "<payload>*<XX>\n", where XX is the
 // XOR of the payload bytes in hex. All numbers are hex. Every command gets

@@ -1,6 +1,6 @@
 ---
 name: kvm-link
-description: Operate a second, physical computer from this PC through the kvm-link hardware, which sends it real keyboard and mouse input (kvm.py, over an ESP32 kill-switch panel and an RP2350 USB board) and shows its screen through an HDMI capture card (grab.ps1). Use this whenever the user wants something done on a machine reached this way and not over the network, for example the mini PC, console, kiosk, test box or "the N100" on the bench. That covers looking at what is on its screen, clicking or typing on it, changing BIOS/UEFI settings, picking a boot device, installing or setting up an operating system, signing in, running commands there, copying a build onto it, or scripting clicks for a test. Also use it when kvm.py, grab.ps1, the capture card, the kill switch or the touch panel are mentioned, or when one of them reports an error.
+description: Operate a second, physical computer from this PC through the kvm-link hardware, which sends it real keyboard and mouse input (kvm.py, over a pair of RP2350 USB boards, or an ESP32 kill-switch panel and one RP2350) and shows its screen through an HDMI capture card (grab.ps1). Use this whenever the user wants something done on a machine reached this way and not over the network, for example the mini PC, console, kiosk, test box or "the N100" on the bench. That covers looking at what is on its screen, clicking or typing on it, changing BIOS/UEFI settings, picking a boot device, installing or setting up an operating system, signing in, running commands there, copying a build onto it, or scripting clicks for a test. Also use it when kvm.py, grab.ps1, the capture card, the kill switch or the touch panel are mentioned, or when one of them reports an error.
 ---
 
 # kvm-link: hands and eyes on another computer
@@ -9,15 +9,17 @@ Two scripts give you a real keyboard, a real mouse and a view of the screen of a
 that is wired to this PC:
 
 ```
-this PC ──USB──> bridge board ──> RP2350 ──USB──> target computer        (kvm.py)
+this PC ──USB──> RP2350 ═╪═ RP2350 ──USB──> target computer            (kvm.py)
 this PC <──USB── HDMI capture card <──HDMI── target computer             (grab.ps1)
 ```
 
 The target sees ordinary USB devices, so this works where remote-desktop tools cannot:
 firmware setup, boot menus, installers, lock screens, a machine with no network.
 
-The bridge board is either a plain RP2350 or an ESP32 touch panel with a kill switch.
-`kvm.py status` prints a `kill switch:` line when it is the panel.
+The usual link is two RP2350 boards soldered together end to end, one end in each
+computer. The board on this PC is called the bridge and the one on the target the target
+board. An ESP32 touch panel with a kill switch can be the bridge instead, wired to a single
+RP2350; `kvm.py status` prints a `kill switch:` line when it is.
 
 Both scripts are in `scripts/` beside this file:
 
@@ -207,10 +209,10 @@ exploring a machine from scratch.
 
 | Message or symptom | What it means |
 | --- | --- |
-| `no bridge board found` | The panel is not a serial port on this PC: a charge-only USB cable, the wrong socket on the panel, or no bridge firmware. |
+| `no bridge board found` | The board on this PC (RP2350 or panel) is not showing up as a serial port: a charge-only USB cable, the wrong socket on a panel, or no firmware on it. |
 | `… is in use by another program` | Another program has the bridge's serial port open, usually a script that is still running. Find out what it is before stopping anything. |
 | `control is switched off at the touchscreen` | The kill switch. See above: tell the user. |
-| `the target board is not answering` | A loose wire between panel and RP2350, or the RP2350 has no power because the target is off or unplugged. |
+| `the target board is not answering` | The far board has no power because the target is off or unplugged, or a joint, wire or the ground jumper between the two boards is open. |
 | `has not picked it up as a USB device` | The target is off, or its cable carries power only. |
 | `asleep and did not wake` / `has not allowed this device to wake it` | Try `kvm.py wake`; otherwise someone has to press its power button. |
 | `cannot type '…': not on a US keyboard` | The text has a character outside US ASCII; type around it. |

@@ -150,19 +150,7 @@ together there, end to end, both face up with their USB sockets pointing away fr
 other. Each of the five pads of one edge is soldered to the pad it meets, five separate
 joints:
 
-```
-            USB                     one board, top view
-   GP14 |                             | GP8
-        '---o------o------o------o------o---'
-          GP13   GP12   GP11   GP10   GP9
-           TX                          RX
-           |      |      |      |      |
-           RX                          TX
-          GP9    GP10   GP11   GP12   GP13
-        .---o------o------o------o------o---.
-   GP8  |                             | GP14
-            USB                     the other board, turned half round
-```
+![Two RP2350-Zero boards soldered end to end: GP13 of each board meets GP9 of the other, and a wire joins the two GND pads](docs/wiring-twoway.svg)
 
 | One board  | The other  |
 |------------|------------|
@@ -179,6 +167,11 @@ joints:
   GP13 and the two outputs would fight each other.
 - With wires instead of solder it is three wires: GP13 of each board to GP9 of the other,
   and GND to GND.
+
+A command written to one board's serial port comes out of the other board as key presses
+and pointer moves, and the answer comes back the same way:
+
+![How a command travels from kvm.py on one computer through both boards to the other computer, and how the answer returns](docs/dataflow-twoway.svg)
 
 Things that differ from the bridge and target pair:
 

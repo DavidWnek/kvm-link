@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 738" width="960" height="738" role="img" aria-labelledby="t d">
+  <title id="t">kvm-link two-way pair: how the two RP2350 boards are joined</title>
+  <desc id="d">Two Waveshare RP2350-Zero boards lie end to end, both face up, with their USB sockets pointing away from each other. The five pads on the end of one board are soldered to the five they meet on the other. Board A GP9 meets board B GP13, and board A GP13 meets board B GP9: those two corner joints are the link, GP13 sending and GP9 receiving on each board. The three joints between them, GP10 to GP12, GP11 to GP11 and GP12 to GP10, carry nothing. A separate wire joins the GND pad of one board to the GND pad of the other.</desc>
+  <defs>
+    <marker id="aA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f5b942"/></marker>
+    <marker id="aB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#4cc38a"/></marker>
+    <marker id="aDark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0d1117"/></marker>
+  </defs>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #e6edf3; }
+    .dim { fill: #8b949e; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace; }
+    .pad { fill: #b08d2e; }
+    .padon { fill: #ffd866; stroke: #ffffff; stroke-width: 1.5; }
+    .pin { font-size: 9.5px; fill: #9db0e8; }
+    .pinon { font-size: 10.5px; font-weight: 700; fill: #ffffff; }
+    .board { fill: #1f3a8a; stroke: #3b5bbd; }
+  </style>
+
+  <rect x="0.5" y="0.5" width="959" height="737" rx="12" fill="#0d1117" stroke="#30363d"/>
+  <text x="60" y="44" font-size="20" font-weight="700">Two-way pair: how the boards are joined</text>
+  <text x="60" y="66" font-size="12.5" class="dim">Both boards face up, end to end, USB sockets pointing away from each other. The same image goes on both.</text>
+  <text x="338" y="106" font-size="14" font-weight="700" text-anchor="middle">Board A</text>
+  <text x="338" y="123" font-size="11" text-anchor="middle" class="mono dim">build/kvm-twoway.uf2</text>
+  <text x="622" y="106" font-size="14" font-weight="700" text-anchor="middle">Board B</text>
+  <text x="622" y="123" font-size="11" text-anchor="middle" class="mono dim">build/kvm-twoway.uf2</text>
+  <path d="M182 240H150" fill="none" stroke="#6e7681" stroke-width="6" stroke-linecap="round"/>
+  <text x="140" y="236" font-size="13" font-weight="700" text-anchor="end">USB to</text>
+  <text x="140" y="253" font-size="13" font-weight="700" text-anchor="end">computer A</text>
+  <path d="M778 240H810" fill="none" stroke="#6e7681" stroke-width="6" stroke-linecap="round"/>
+  <text x="820" y="236" font-size="13" font-weight="700">USB to</text>
+  <text x="820" y="253" font-size="13" font-weight="700">computer B</text>
+  <rect class="board" x="196" y="170" width="284" height="140" rx="8"/>
+  <rect class="board" x="480" y="170" width="284" height="140" rx="8"/>
+  <rect x="182" y="216" width="40" height="48" rx="5" fill="#c9ced6" stroke="#8b949e"/>
+  <rect x="187" y="224" width="7" height="32" rx="3" fill="#30363d"/>
+  <rect x="738" y="216" width="40" height="48" rx="5" fill="#c9ced6" stroke="#8b949e"/>
+  <rect x="766" y="224" width="7" height="32" rx="3" fill="#30363d"/>
+  <rect x="276" y="246" width="14" height="14" rx="3" fill="#e5e7eb"/>
+  <text x="283" y="269" font-size="7" text-anchor="middle" fill="#c7d2fe">BOOT</text>
+  <rect x="276" y="220" width="14" height="14" rx="3" fill="#e5e7eb"/>
+  <text x="283" y="217" font-size="7" text-anchor="middle" fill="#c7d2fe">RUN</text>
+  <rect x="670" y="220" width="14" height="14" rx="3" fill="#e5e7eb"/>
+  <text x="677" y="217" font-size="7" text-anchor="middle" fill="#c7d2fe">BOOT</text>
+  <rect x="670" y="246" width="14" height="14" rx="3" fill="#e5e7eb"/>
+  <text x="677" y="269" font-size="7" text-anchor="middle" fill="#c7d2fe">RUN</text>
+  <rect x="330" y="222" width="36" height="36" rx="3" fill="#111827" stroke="#374151"/>
+  <text x="348" y="243" font-size="7" text-anchor="middle" fill="#9ca3af">RP2350</text>
+  <rect x="594" y="222" width="36" height="36" rx="3" fill="#111827" stroke="#374151"/>
+  <text x="612" y="243" font-size="7" text-anchor="middle" fill="#9ca3af">RP2350</text>
+  <rect class="pad" x="222" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="228" y="158" text-anchor="middle">GP0</text>
+  <rect class="pad" x="250" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="256" y="158" text-anchor="middle">GP1</text>
+  <rect class="pad" x="278" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="284" y="158" text-anchor="middle">GP2</text>
+  <rect class="pad" x="306" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="312" y="158" text-anchor="middle">GP3</text>
+  <rect class="pad" x="334" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="340" y="158" text-anchor="middle">GP4</text>
+  <rect class="pad" x="362" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="368" y="158" text-anchor="middle">GP5</text>
+  <rect class="pad" x="390" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="396" y="158" text-anchor="middle">GP6</text>
+  <rect class="pad" x="418" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="424" y="158" text-anchor="middle">GP7</text>
+  <rect class="pad" x="446" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="452" y="158" text-anchor="middle">GP8</text>
+  <rect class="pad" x="222" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="228" y="330" text-anchor="middle">5V</text>
+  <rect class="padon" x="250" y="304" width="12" height="12" rx="3"/>
+  <rect class="pad" x="278" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="284" y="330" text-anchor="middle">3V3</text>
+  <rect class="pad" x="306" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="312" y="330" text-anchor="middle">GP29</text>
+  <rect class="pad" x="334" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="340" y="330" text-anchor="middle">GP28</text>
+  <rect class="pad" x="362" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="368" y="330" text-anchor="middle">GP27</text>
+  <rect class="pad" x="390" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="396" y="330" text-anchor="middle">GP26</text>
+  <rect class="pad" x="418" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="424" y="330" text-anchor="middle">GP15</text>
+  <rect class="pad" x="446" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="452" y="330" text-anchor="middle">GP14</text>
+  <rect class="pad" x="726" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="732" y="158" text-anchor="middle">5V</text>
+  <rect class="padon" x="698" y="164" width="12" height="12" rx="3"/>
+  <rect class="pad" x="670" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="676" y="158" text-anchor="middle">3V3</text>
+  <rect class="pad" x="642" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="648" y="158" text-anchor="middle">GP29</text>
+  <rect class="pad" x="614" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="620" y="158" text-anchor="middle">GP28</text>
+  <rect class="pad" x="586" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="592" y="158" text-anchor="middle">GP27</text>
+  <rect class="pad" x="558" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="564" y="158" text-anchor="middle">GP26</text>
+  <rect class="pad" x="530" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="536" y="158" text-anchor="middle">GP15</text>
+  <rect class="pad" x="502" y="164" width="12" height="12" rx="3"/>
+  <text class="pin" x="508" y="158" text-anchor="middle">GP14</text>
+  <rect class="pad" x="726" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="732" y="330" text-anchor="middle">GP0</text>
+  <rect class="pad" x="698" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="704" y="330" text-anchor="middle">GP1</text>
+  <rect class="pad" x="670" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="676" y="330" text-anchor="middle">GP2</text>
+  <rect class="pad" x="642" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="648" y="330" text-anchor="middle">GP3</text>
+  <rect class="pad" x="614" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="620" y="330" text-anchor="middle">GP4</text>
+  <rect class="pad" x="586" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="592" y="330" text-anchor="middle">GP5</text>
+  <rect class="pad" x="558" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="564" y="330" text-anchor="middle">GP6</text>
+  <rect class="pad" x="530" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="536" y="330" text-anchor="middle">GP7</text>
+  <rect class="pad" x="502" y="304" width="12" height="12" rx="3"/>
+  <text class="pin" x="508" y="330" text-anchor="middle">GP8</text>
+  <rect class="pad" x="466" y="178" width="12" height="12" rx="3"/>
+  <rect class="pad" x="482" y="178" width="12" height="12" rx="3"/>
+  <rect x="469" y="179" width="22" height="10" rx="5" fill="#4cc38a" stroke="#0d1117" stroke-width="1"/>
+  <text class="pinon" x="458" y="188" text-anchor="end">GP9</text>
+  <text class="pinon" x="502" y="188">GP13</text>
+  <rect class="pad" x="466" y="206" width="12" height="12" rx="3"/>
+  <rect class="pad" x="482" y="206" width="12" height="12" rx="3"/>
+  <rect x="469" y="207" width="22" height="10" rx="5" fill="#d0d7de" stroke="#0d1117" stroke-width="1"/>
+  <text class="pin" x="458" y="216" text-anchor="end">GP10</text>
+  <text class="pin" x="502" y="216">GP12</text>
+  <rect class="pad" x="466" y="234" width="12" height="12" rx="3"/>
+  <rect class="pad" x="482" y="234" width="12" height="12" rx="3"/>
+  <rect x="469" y="235" width="22" height="10" rx="5" fill="#d0d7de" stroke="#0d1117" stroke-width="1"/>
+  <text class="pin" x="458" y="244" text-anchor="end">GP11</text>
+  <text class="pin" x="502" y="244">GP11</text>
+  <rect class="pad" x="466" y="262" width="12" height="12" rx="3"/>
+  <rect class="pad" x="482" y="262" width="12" height="12" rx="3"/>
+  <rect x="469" y="263" width="22" height="10" rx="5" fill="#d0d7de" stroke="#0d1117" stroke-width="1"/>
+  <text class="pin" x="458" y="272" text-anchor="end">GP12</text>
+  <text class="pin" x="502" y="272">GP10</text>
+  <rect class="pad" x="466" y="290" width="12" height="12" rx="3"/>
+  <rect class="pad" x="482" y="290" width="12" height="12" rx="3"/>
+  <rect x="469" y="291" width="22" height="10" rx="5" fill="#f5b942" stroke="#0d1117" stroke-width="1"/>
+  <text class="pinon" x="458" y="300" text-anchor="end">GP13</text>
+  <text class="pinon" x="502" y="300">GP9</text>
+  <path d="M480 136V148" fill="none" stroke="#8b949e" stroke-width="1.5"/>
+  <text x="480" y="130" font-size="12" font-weight="700" text-anchor="middle">five solder joints</text>
+  <path d="M256 316V352H718V192H704V176" fill="none" stroke="#0d1117" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M256 316V352H718V192H704V176" fill="none" stroke="#d0d7de" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+  <text class="pinon" x="268" y="298">GND</text>
+  <text class="pinon" x="704" y="158" text-anchor="middle">GND</text>
+  <text x="487" y="372" font-size="12" font-weight="700" text-anchor="middle">GND to GND: one wire, over or under the boards</text>
+  <line x1="60" y1="398" x2="900" y2="398" stroke="#21262d"/>
+  <text x="60" y="428" font-size="14" font-weight="700">The joints, close up</text>
+  <rect class="board" x="250" y="436" width="170" height="180" rx="8"/>
+  <rect class="board" x="500" y="436" width="170" height="180" rx="8"/>
+  <text x="335" y="428" font-size="12" font-weight="700" text-anchor="middle">Board A</text>
+  <text x="585" y="428" font-size="12" font-weight="700" text-anchor="middle">Board B</text>
+  <rect class="pad" x="408" y="450" width="18" height="16" rx="3"/>
+  <rect class="pad" x="494" y="450" width="18" height="16" rx="3"/>
+  <rect x="418" y="453" width="84" height="10" rx="5" fill="#4cc38a" opacity="1" stroke="#0d1117" stroke-width="1"/>
+  <text class="pinon" x="398" y="462" text-anchor="end" font-size="12">GP9</text>
+  <text class="pinon" x="522" y="462" font-size="12">GP13</text>
+  <path d="M486 458H436" fill="none" stroke="#0d1117" stroke-width="2" marker-end="url(#aDark)"/>
+  <text x="266" y="462" font-size="12" font-weight="700" fill="#4cc38a">receives (RX)</text>
+  <text x="654" y="462" font-size="12" font-weight="700" fill="#4cc38a" text-anchor="end">sends (TX)</text>
+  <text x="692" y="462" font-size="12" fill="#4cc38a">B to A</text>
+  <rect class="pad" x="408" y="484" width="18" height="16" rx="3"/>
+  <rect class="pad" x="494" y="484" width="18" height="16" rx="3"/>
+  <rect x="418" y="487" width="84" height="10" rx="5" fill="#d0d7de" opacity="0.55" stroke="#0d1117" stroke-width="1"/>
+  <text class="pin" x="398" y="496" text-anchor="end" font-size="12">GP10</text>
+  <text class="pin" x="522" y="496" font-size="12">GP12</text>
+  <rect class="pad" x="408" y="518" width="18" height="16" rx="3"/>
+  <rect class="pad" x="494" y="518" width="18" height="16" rx="3"/>
+  <rect x="418" y="521" width="84" height="10" rx="5" fill="#d0d7de" opacity="0.55" stroke="#0d1117" stroke-width="1"/>
+  <text class="pin" x="398" y="530" text-anchor="end" font-size="12">GP11</text>
+  <text class="pin" x="522" y="530" font-size="12">GP11</text>
+  <rect class="pad" x="408" y="552" width="18" height="16" rx="3"/>
+  <rect class="pad" x="494" y="552" width="18" height="16" rx="3"/>
+  <rect x="418" y="555" width="84" height="10" rx="5" fill="#d0d7de" opacity="0.55" stroke="#0d1117" stroke-width="1"/>
+  <text class="pin" x="398" y="564" text-anchor="end" font-size="12">GP12</text>
+  <text class="pin" x="522" y="564" font-size="12">GP10</text>
+  <rect class="pad" x="408" y="586" width="18" height="16" rx="3"/>
+  <rect class="pad" x="494" y="586" width="18" height="16" rx="3"/>
+  <rect x="418" y="589" width="84" height="10" rx="5" fill="#f5b942" opacity="1" stroke="#0d1117" stroke-width="1"/>
+  <text class="pinon" x="398" y="598" text-anchor="end" font-size="12">GP13</text>
+  <text class="pinon" x="522" y="598" font-size="12">GP9</text>
+  <path d="M434 594H484" fill="none" stroke="#0d1117" stroke-width="2" marker-end="url(#aDark)"/>
+  <text x="266" y="598" font-size="12" font-weight="700" fill="#f5b942">sends (TX)</text>
+  <text x="654" y="598" font-size="12" font-weight="700" fill="#f5b942" text-anchor="end">receives (RX)</text>
+  <text x="692" y="598" font-size="12" fill="#f5b942">A to B</text>
+  <path d="M684 482h6V570h-6" fill="none" stroke="#8b949e" stroke-width="1.5"/>
+  <text x="700" y="522" font-size="12" class="dim">carry nothing:</text>
+  <text x="700" y="538" font-size="12" class="dim">they hold the boards together</text>
+  <line x1="60" y1="642" x2="900" y2="642" stroke="#21262d"/>
+  <text x="60" y="664" font-size="12.5">Each board sends on <tspan fill="#ffffff" font-weight="700">GP13</tspan> and receives on <tspan fill="#ffffff" font-weight="700">GP9</tspan>; turned half round, one board's GP13 lands on the other's GP9. No joint may touch its neighbour.</text>
+  <text x="60" y="686" font-size="12.5" class="dim">There is no ground on that edge, so GND needs its own wire. Leave 5V and 3V3 alone: each board is powered by its own computer.</text>
+  <text x="60" y="708" font-size="12.5" class="dim">Boards shown: Waveshare RP2350-Zero, top view.</text>
+</svg>
